@@ -1,6 +1,11 @@
 (ns krulak
   "Utility functions and macros.")
 
+(defn deep-merge [& args]
+  (if (every? #(or (map? %) (nil? %)) args)
+    (apply merge-with deep-merge args)
+    (last args)))
+
 (defn keywordize
   "Return a keyword whether given a string, symbol, or keyword."
   [x]
