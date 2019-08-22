@@ -1,5 +1,10 @@
 (ns krulak
-  "krulak is a web utility library for Clojure.")
+  "Utility functions and macros.")
+
+(defn keywordize
+  "Return a keyword whether given a string, symbol, or keyword."
+  [x]
+  (if (keyword? x) x (keyword (str x))))
 
 (defmacro defalias [new-name old-name]
   `(let [doc-str# (:doc (meta #'~old-name))]
