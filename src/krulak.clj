@@ -11,9 +11,15 @@
   [x]
   (if (keyword? x) x (keyword (str x))))
 
+(defn update-alias-meta [old-name old-meta]
+  (fn [new-meta]
+    (merge new-meta
+      (update old-meta :doc #(str "Alias for " old-name "." (if % "\n\n") %)))))
+
 (defmacro defalias [new-name old-name]
-  `(let [doc-str# (:doc (meta #'~old-name))]
-     (def ^{:doc doc-str#} ~new-name @#'~old-name)))
+  `(alter-meta!
+    (def ~new-name)
+      (update-alias-meta '~old-name (meta (var ~old-name)))))
 
 (defmacro defaliases [& syms]
   `(do
