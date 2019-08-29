@@ -1,6 +1,6 @@
 (ns krulak
   "Utility functions and macros."
-  (:require [clojure.string :as str])
+  (:require [clojure.string :as str]))
 
 (defn deep-merge [& args]
   (if (every? #(or (map? %) (nil? %)) args)
