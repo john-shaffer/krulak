@@ -53,3 +53,15 @@
           base64url-encode
           (take length)
           (apply str))))
+
+(def url-slug-replacements {\space \-, \( \_, \) \_})
+
+(def url-slug-allowed-chars
+  (set "0123456789abcdefghijklmnopqrstuvwxyz-_~"))
+
+(defn to-url-slug [& xs]
+  (->> (apply str xs)
+       str/lower-case
+       (map #(url-slug-replacements % %))
+       (filter url-slug-allowed-chars)
+       (apply str)))
