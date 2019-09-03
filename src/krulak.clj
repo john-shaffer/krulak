@@ -7,11 +7,6 @@
     (apply merge-with deep-merge args)
     (last args)))
 
-(defn keywordize
-  "Return a keyword whether given a string, symbol, or keyword."
-  [x]
-  (if (keyword? x) x (keyword (str x))))
-
 (defn update-alias-meta [old-name old-meta]
   (fn [new-meta]
     (merge new-meta
