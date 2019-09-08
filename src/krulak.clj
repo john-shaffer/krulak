@@ -8,6 +8,9 @@
     (apply merge-with deep-merge args)
     (last args)))
 
+(defn rpartial [f & args]
+  #(apply f (concat %& args)))
+
 (defn update-alias-meta [old-name old-meta]
   (fn [new-meta]
     (merge new-meta
