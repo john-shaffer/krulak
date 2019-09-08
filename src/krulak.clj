@@ -65,19 +65,3 @@
        (map #(url-slug-replacements % %))
        (filter url-slug-allowed-chars)
        (apply str)))
-
-(defmacro require-auth [auth & body]
-  (let [cond-form (if (vector? auth) `if-let `if)]
-    `(~cond-form ~auth
-                 (do ~@body)
-                 {:status 401
-                  :body "Unauthorized"})))
-
-(defn errors-response [errors]
-  {:status 403
-   :body (json/generate-string {:errors errors})})
-
-(defmacro errors-or [errors & body]
-  `(if-let [errors# ~errors]
-     (errors-response errors#)
-     (do ~@body)))
