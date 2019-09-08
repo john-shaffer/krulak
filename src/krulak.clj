@@ -1,6 +1,7 @@
 (ns krulak
   "Utility functions and macros."
-  (:require [clojure.string :as str]))
+  (:require [cheshire.core :as json]
+            [clojure.string :as str]))
 
 (defn deep-merge [& args]
   (if (every? #(or (map? %) (nil? %)) args)
@@ -68,3 +69,12 @@
                  (do ~@body)
                  {:status 401
                   :body "Unauthorized"})))
+
+(defn errors-response [errors]
+  {:status 403
+   :body (json/generate-string {:errors errors})})
+
+(defmacro errors-or [errors & body]
+  `(if-let [errors# ~errors]
+     (errors-response errors#)
+     (do ~@body)))
