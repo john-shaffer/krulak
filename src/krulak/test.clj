@@ -1,7 +1,8 @@
-(ns krulak.test)
+(ns krulak.test
+  (:require [clojure.test :as test]))
 
 (defmacro status-is [status test]
-  `(is (= ~status (:status ~test))))
+  `(test/is (= ~status (:status ~test))))
 
 (defmacro body-is [body test]
-  `(is (= ~body (:body ~test))))
+  `(test/is (= ~body (:body ~test))))
