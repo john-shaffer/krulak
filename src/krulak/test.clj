@@ -1,5 +1,4 @@
-(ns krulak.test
-  (:use clojure.test))
+(ns krulak.test)
 
 (defmacro status-is [status test]
   `(is (= ~status (:status ~test))))
