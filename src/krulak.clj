@@ -8,6 +8,10 @@
     (apply merge-with deep-merge args)
     (last args)))
 
+(defn rmerge [& ms]
+  "Like clojure.core/merge, but in reverse order."
+  (apply merge (reverse ms)))
+
 (defn maybe-deref [id]
   (when id @id))
 
