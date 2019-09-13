@@ -8,6 +8,9 @@
     (apply merge-with deep-merge args)
     (last args)))
 
+(defn maybe-deref [id]
+  (when id @id))
+
 (defn rpartial [f & args]
   #(apply f (concat %& args)))
 
