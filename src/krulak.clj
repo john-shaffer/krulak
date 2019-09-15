@@ -1,7 +1,8 @@
 (ns krulak
   "Utility functions and macros."
   (:require [cheshire.core :as json]
-            [clojure.string :as str]))
+            [clojure.string :as str]
+            [ring.util.codec :as codec]))
 
 (defn deep-merge [& args]
   (if (every? #(or (map? %) (nil? %)) args)
@@ -44,6 +45,9 @@
       (java.security.SecureRandom/getInstance "SHA1PRNG")
       arr)
     arr))
+
+(defn secret-key [& [num-bytes]]
+  (-> (or num-bytes 16) rand-bytes codec/base64-encode))
 
 (defn base64url-encode
   "Return a base64url encoded string as defined by RFC 4648 §5 at
