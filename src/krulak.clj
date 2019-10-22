@@ -85,7 +85,7 @@
     (assoc req :accept :json)
     r)
    :body
-   json/parse-string))
+   #(json/parse-string % true)))
 
 (defn json-post [url & [req & r]]
   (update
@@ -96,7 +96,7 @@
            :content-type :json)
     r)
    :body
-   json/parse-string))
+   #(json/parse-string % true)))
 
 (defn json-put [url & [req & r]]
   (update
@@ -107,7 +107,7 @@
            :content-type :json)
     r)
    :body
-   json/parse-string))
+   #(json/parse-string % true)))
 
 (defn json-delete [url & [req & r]]
   (update
@@ -118,4 +118,4 @@
            :content-type :json)
     r)
    :body
-   json/parse-string))
+   #(json/parse-string % true)))
