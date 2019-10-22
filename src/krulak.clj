@@ -2,8 +2,14 @@
   "Utility functions and macros."
   (:require [cheshire.core :as json]
             [clj-http.client :as client]
+            [clojure.core.cache :as cache]
             [clojure.string :as str]
             [ring.util.codec :as codec]))
+
+(defn lru-ttl-cache [base threshold ttl]
+  (-> base
+      (cache/lru-cache-factory :threshold threshold)
+      (cache/ttl-cache-factory :ttl ttl)))
 
 (defn deep-merge [& args]
   (if (every? #(or (map? %) (nil? %)) args)
