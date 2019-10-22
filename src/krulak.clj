@@ -3,13 +3,24 @@
   (:require [cheshire.core :as json]
             [clj-http.client :as client]
             [clojure.core.cache :as cache]
+            [clojure.core.memoize :as memo]
             [clojure.string :as str]
-            [ring.util.codec :as codec]))
+            [ring.util.codec :as codec])
+  (:import clojure.core.memoize.PluggableMemoization))
 
 (defn lru-ttl-cache [base threshold ttl]
   (-> base
       (cache/lru-cache-factory :threshold threshold)
       (cache/ttl-cache-factory :ttl ttl)))
+
+(defn lru-ttl-memo
+  ([f base threshold ttl]
+   (memo/build-memoizer
+      #(PluggableMemoization. %1 (lru-ttl-cache %4 %2 %3))
+      f
+      threshold
+      ttl
+      (@#'memo/derefable-seed base))))
 
 (defn deep-merge [& args]
   (if (every? #(or (map? %) (nil? %)) args)
