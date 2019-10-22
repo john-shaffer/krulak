@@ -1,6 +1,7 @@
 (ns krulak
   "Utility functions and macros."
-  (:require [clj-http.client :as client]
+  (:require [cheshire.core :as json]
+            [clj-http.client :as client]
             [clojure.string :as str]
             [ring.util.codec :as codec]))
 
@@ -78,31 +79,43 @@
        (apply str)))
 
 (defn json-get [url & [req & r]]
-  (client/get
-   url
-   (assoc req :accept :json)
-   r))
+  (update
+   (client/get
+    url
+    (assoc req :accept :json)
+    r)
+   :body
+   json/parse-string))
 
 (defn json-post [url & [req & r]]
-  (client/post
-   url
-   (assoc req
-          :accept :json
-          :content-type :json)
-   r))
+  (update
+   (client/post
+    url
+    (assoc req
+           :accept :json
+           :content-type :json)
+    r)
+   :body
+   json/parse-string))
 
 (defn json-put [url & [req & r]]
-  (client/put
-   url
-   (assoc req
-          :accept :json
-          :content-type :json)
-   r))
+  (update
+   (client/put
+    url
+    (assoc req
+           :accept :json
+           :content-type :json)
+    r)
+   :body
+   json/parse-string))
 
 (defn json-delete [url & [req & r]]
-  (client/delete
-   url
-   (assoc req
-          :accept :json
-          :content-type :json)
-   r))
+  (update
+   (client/delete
+    url
+    (assoc req
+           :accept :json
+           :content-type :json)
+    r)
+   :body
+   json/parse-string))
