@@ -13,14 +13,20 @@
       (cache/lru-cache-factory :threshold threshold)
       (cache/ttl-cache-factory :ttl ttl)))
 
-(defn lru-ttl-memo
-  ([f base threshold ttl]
-   (memo/build-memoizer
-      #(PluggableMemoization. %1 (lru-ttl-cache %4 %2 %3))
-      f
-      threshold
-      ttl
-      (@#'memo/derefable-seed base))))
+(def soft-lru-ttl-cache (comp cache/soft-cache-factory lru-ttl-cache))
+
+(defn memo-build-helper [cache-factory f base & args]
+  (memo/build-memoizer
+   #(PluggableMemoization. %1 (apply cache-factory %2 %3))
+   f
+   (@#'memo/derefable-seed base)
+   args))
+
+(defn lru-ttl-memo [f base threshold ttl]
+  (memo-build-helper lru-ttl-cache f base threshold ttl))
+
+(defn soft-lru-ttl-memo [f base threshold ttl]
+  (memo-build-helper soft-lru-ttl-cache f base threshold ttl))
 
 (defn deep-merge [& args]
   (if (every? #(or (map? %) (nil? %)) args)
