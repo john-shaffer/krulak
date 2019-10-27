@@ -8,11 +8,18 @@
             [ring.util.codec :as codec])
   (:import clojure.core.memoize.PluggableMemoization))
 
+(defn take-map [n m]
+  (if (> 0 n)
+    (empty m)
+    (if (< n (count m))
+      (->> m first key (dissoc m) (recur n))
+      m)))
+
 (defn merge-meta [x m]
   (vary-meta x merge m))
 
 (defn lru-ttl-cache [base threshold ttl]
-  (-> base
+  (-> (take-map threshold base)
       (cache/lru-cache-factory :threshold threshold)
       (cache/ttl-cache-factory :ttl ttl)))
 
@@ -36,6 +43,10 @@
     (memo-build-helper soft-lru-ttl-cache f base threshold ttl)
     {::cache-threshold threshold
      ::cache-ttl ttl}))
+
+(defn memo-cache-swap! [f new-cache]
+  (when-let [old-cache (#'memo/cache-id f)]
+    (swap! old-cache (constantly new-cache))))
 
 (defn deep-merge [& args]
   (if (every? #(or (map? %) (nil? %)) args)
