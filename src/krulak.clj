@@ -53,6 +53,25 @@
   (when-let [old-cache (#'memo/cache-id f)]
     (swap! old-cache (constantly new-cache))))
 
+(defn memo-evict!
+  "Evicts a set of arguments from the cache of a function backed by
+  clojure.core.memoize. Returns the function.";
+  [f & args]
+  (-> f (#'clojure.core.memoize/cache-id) (swap! cache/evict args))
+  f)
+
+(defn memo-fresh
+  "Takes a function backed by clojure.core.memoize and args and gets a fresh
+  result, swapping the new result into the cache. This swaps a delay into the
+  cache before dereferencing it, so it could cause latency for other users of
+  the cache."
+  [f & args]
+  (let [g (-> f meta :clojure.core.memoize/original)
+        id (delay (apply g args))]
+    (-> f (#'clojure.core.memoize/cache-id)
+        (swap! cache/miss args id))
+    @id))
+
 (defn deep-merge [& args]
   (if (every? #(or (map? %) (nil? %)) args)
     (apply merge-with deep-merge args)
