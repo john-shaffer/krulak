@@ -8,7 +8,9 @@
                  [org.clojure/core.memoize "0.7.2"]
                  [cheshire "5.9.0"]
                  [clj-http "3.10.0"]
-                 [ring/ring-codec "1.1.2"]]
+                 [ring/ring-anti-forgery "1.3.0"]
+                 [ring/ring-codec "1.1.2"]
+                 [ring "1.7.1"]]
   :deploy-repositories [["releases" :clojars
                          "snapshots" :clojars]]
   :repl-options {:init-ns krulak})
