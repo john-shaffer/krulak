@@ -61,10 +61,10 @@
   f)
 
 (defn memo-fresh
-  "Takes a function backed by clojure.core.memoize and args and gets a fresh
-  result, swapping the new result into the cache. This swaps a delay into the
-  cache before dereferencing it, so it could cause latency for other users of
-  the cache."
+  "Takes a function backed by clojure.core.memoize and args and gets a
+  fresh result, swapping the new result into the cache. This swaps a
+  delay into the cache before dereferencing it, so it could cause latency
+  for other users of the cache."
   [f & args]
   (let [g (-> f meta :clojure.core.memoize/original)
         id (delay (apply g args))]
