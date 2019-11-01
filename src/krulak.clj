@@ -66,7 +66,7 @@
   delay into the cache before dereferencing it, so it could cause latency
   for other users of the cache."
   [f & args]
-  (let [g (-> f meta :clojure.core.memoize/original)
+  (let [g (memo/memo-unwrap f)
         id (delay (apply g args))]
     (-> f (#'clojure.core.memoize/cache-id)
         (swap! cache/miss args id))
