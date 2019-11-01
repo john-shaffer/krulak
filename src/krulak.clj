@@ -60,6 +60,12 @@
   (-> f (#'clojure.core.memoize/cache-id) (swap! cache/evict args))
   f)
 
+(defn memo-update!
+  "Update the cached return value for a seq of args for a function backed
+  by clojure.core.memoize."
+  [f args v]
+  (-> f (#'memo/cache-id) (swap! cache/miss args v)))
+
 (defn memo-fresh
   "Takes a function backed by clojure.core.memoize and args and gets a
   fresh result, swapping the new result into the cache. This swaps a
