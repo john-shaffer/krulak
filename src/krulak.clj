@@ -44,7 +44,12 @@
     {::cache-threshold threshold
      ::cache-ttl ttl}))
 
-(defn memo-cache-swap! [f new-cache]
+(defn memo-cache-swap!
+  "Replaces the entire cache of a function backed by
+  clojure.core.memoize, where clojure.core.memoize/cache-swap! only
+  replaces the data inside the cache. Used when you want to adjust
+  parameters of the cache (like size) on the fly."
+  [f new-cache]
   (when-let [old-cache (#'memo/cache-id f)]
     (swap! old-cache (constantly new-cache))))
 
