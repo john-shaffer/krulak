@@ -52,9 +52,8 @@
   (when-let [old-cache (#'memo/cache-id f)]
     (swap! old-cache (constantly new-cache))))
 
-(defn memo-evict!
-  "Evicts a set of arguments from the cache of a function backed by
-  clojure.core.memoize. Returns the function."
+(defn ^{:deprecated "0.8.0"} memo-evict!
+  "DEPRECATED: Use clojure.core.memoize/memo-clear!"
   [f & args]
   (-> f (#'memo/cache-id) (swap! cache/evict args))
   f)
