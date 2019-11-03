@@ -23,26 +23,25 @@
       (cache/lru-cache-factory :threshold threshold)
       (cache/ttl-cache-factory :ttl ttl)))
 
-(def soft-lru-ttl-cache (comp cache/soft-cache-factory lru-ttl-cache))
+(def soft-lru-ttl-cache
+  (comp cache/soft-cache-factory lru-ttl-cache))
 
-(defn memo-build-helper [cache-factory f base & args]
-  (memo/build-memoizer
-   #(PluggableMemoization. %1 (apply cache-factory %2 %3))
-   f
-   (#'memo/derefable-seed base)
-   args))
+(defn ^{:deprecated "0.8.0"} memo-build-helper
+  "DEPRECATED: Use clojure.core.memoize/memoizer."
+  [cache-factory f base & args]
+  (memo/memoizer f (apply cache-factory base args)))
 
 (defn lru-ttl-memo [f base threshold ttl]
   (merge-meta
-    (memo-build-helper lru-ttl-cache f base threshold ttl)
-    {::cache-threshold threshold
-     ::cache-ttl ttl}))
+   (memo/memoizer f (lru-ttl-cache base threshold ttl))
+   {::cache-threshold threshold
+    ::cache-ttl ttl}))
 
 (defn soft-lru-ttl-memo [f base threshold ttl]
   (merge-meta
-    (memo-build-helper soft-lru-ttl-cache f base threshold ttl)
-    {::cache-threshold threshold
-     ::cache-ttl ttl}))
+   (memo/memoizer f (soft-lru-ttl-cache base threshold ttl))
+   {::cache-threshold threshold
+    ::cache-ttl ttl}))
 
 (defn memo-cache-swap!
   "Replaces the entire cache of a function backed by
@@ -57,7 +56,7 @@
   "Evicts a set of arguments from the cache of a function backed by
   clojure.core.memoize. Returns the function."
   [f & args]
-  (-> f (#'clojure.core.memoize/cache-id) (swap! cache/evict args))
+  (-> f (#'memo/cache-id) (swap! cache/evict args))
   f)
 
 (defn memo-update!
