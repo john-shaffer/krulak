@@ -187,3 +187,11 @@
     r)
    :body
    #(json/parse-string % true)))
+
+(defn vectorize-params
+  "Ring turns a duplicated parameter like ?c=a&c=b into a vector value,
+  so you get {\"c\" [\"a\" \"b\"] in :params. A non-duplicated parameter like
+  ?c=a is turned into {\"c\" \"a\"}. This function always puts parameter values
+  inside vectors, so that callers only have to understand one format."
+  [m]
+  (me/map-vals #(if (vector? %) % [%]) m))
