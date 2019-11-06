@@ -20,7 +20,7 @@
   (vary-meta x merge m))
 
 (defn lru-ttl-cache [base threshold ttl]
-  (-> (take-map threshold base)
+  (-> (or (take-map threshold base) {})
       (cache/lru-cache-factory :threshold threshold)
       (cache/ttl-cache-factory :ttl ttl)))
 
