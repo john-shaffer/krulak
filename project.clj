@@ -1,4 +1,4 @@
-(defproject krulak "0.8.0"
+(defproject krulak "0.9.0-SNAPSHOT"
   :description "krulak is a web utility library for Clojure."
   :url "https://github.com/john-shaffer/krulak"
   :license {:name "The MIT License"
