@@ -7,7 +7,8 @@
             [clojure.string :as str]
             [medley.core :as me]
             [ring.util.codec :as codec])
-  (:import clojure.core.memoize.PluggableMemoization))
+  (:import clojure.core.memoize.PluggableMemoization
+           java.net.URLEncoder))
 
 (defn take-map [n m]
   (if (> 0 n)
@@ -196,3 +197,34 @@
   inside vectors, so that callers only have to understand one format."
   [m]
   (me/map-vals #(if (vector? %) % [%]) m))
+
+(defn full-name [x]
+  (when x
+    (if (string? x)
+      x
+      (if (simple-ident? x)
+        (name x)
+        (str (namespace x) "/" (name x))))))
+
+(defn query-encode [k v]
+  (str (URLEncoder/encode (full-name k)) "="
+       (URLEncoder/encode (str v))))
+
+(defn query-param-pairs [m]
+  (mapcat
+   (fn [[k v]]
+     (if (coll? v)
+       (map #(query-encode k %) v)
+       (list (query-encode k v))))
+   m))
+
+(defn query-param-string
+  "Turn a ring-style map of params into a querystring, including the ?. Values
+  that are collections are turned into multiple key-value pairs:
+  (query-param-string {:a [1 2]}) => \"?a=1&a=2\". This is the inverse of how
+  ring processes the querystring."
+  [m]
+  (if (empty? m)
+    ""
+    (let [[f & more] (query-param-pairs m)]
+      (str/join "&" (cons (str "?" f) more)))))
