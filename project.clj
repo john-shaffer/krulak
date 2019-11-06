@@ -8,6 +8,7 @@
                  [org.clojure/core.memoize "0.8.2"]
                  [cheshire "5.9.0"]
                  [clj-http "3.10.0"]
+                 [medley "1.2.0"]
                  [ring/ring-anti-forgery "1.3.0"]
                  [ring/ring-codec "1.1.2"]
                  [ring "1.7.1"]]
