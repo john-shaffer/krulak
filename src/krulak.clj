@@ -2,6 +2,8 @@
   "Utility functions and macros."
   (:require [cheshire.core :as json]
             [clj-http.client :as client]
+            [clj-time.core :as tm]
+            [clj-time.format :as tf]
             [clojure.core.cache :as cache]
             [clojure.core.memoize :as memo]
             [clojure.string :as str]
@@ -228,3 +230,22 @@
     ""
     (let [[f & more] (query-param-pairs m)]
       (str/join "&" (cons (str "?" f) more)))))
+
+(def month-names
+  ["January" "February" "March" "April" "May" "June"
+   "July" "August" "September" "October" "November" "December"])
+
+(defn pretty-date
+  "Return date formatted like \"February 2, 2014\"."
+  ([] (pretty-date (tm/now)))
+  ([dt]
+     (let [month-name (-> dt tm/month dec month-names)]
+       (str month-name " " (tm/day dt) ", " (tm/year dt)))))
+
+(def date-format (tf/formatter "yyyy/MM/dd HH:mm:ss"))
+
+(def parse-date (partial tf/parse date-format))
+
+(defn format-date 
+  ([] (format-date (tm/now)))
+  ([dt] (tf/unparse date-format dt)))
