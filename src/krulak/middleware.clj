@@ -1,6 +1,7 @@
 (ns krulak.middleware
   "An assortment of useful middleware for Ring handlers."
   (:require [krulak :as kr]
+            [ring.middleware.format :as rmf]
             [ring.middleware.session :as rms]
             [ring.middleware.session.cookie :as rmsc]
             [ring.middleware.stacktrace :as rmst]
@@ -49,3 +50,13 @@
     (->> (merge (:form-params request) (:body-params request))
          (assoc request :body-params)
          f)))
+
+(defn wrap-restful-format [f]
+  (-> f
+      wrap-form-in-body-params
+      (rmf/wrap-restful-format
+       :formats [:json-kw :edn :yaml-kw :yaml-in-html])))
+
+(defmacro defrestful [sym & body]
+  `(kr/defn-wrap ~sym wrap-restful-format
+     ~@body))

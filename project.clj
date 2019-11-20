@@ -12,7 +12,8 @@
                  [medley "1.2.0"]
                  [ring/ring-anti-forgery "1.3.0"]
                  [ring/ring-codec "1.1.2"]
-                 [ring "1.7.1"]]
+                 [ring "1.7.1"]
+                 [ring-middleware-format "0.7.4"]]
   :deploy-repositories [["releases" :clojars
                          "snapshots" :clojars]]
   :repl-options {:init-ns krulak})
