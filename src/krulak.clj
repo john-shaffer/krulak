@@ -8,9 +8,11 @@
             [clojure.core.memoize :as memo]
             [clojure.string :as str]
             [medley.core :as me]
-            [ring.util.codec :as codec])
+            [ring.util.codec :as ruc])
   (:import clojure.core.memoize.PluggableMemoization
-           java.net.URLEncoder))
+           java.net.URLEncoder
+           javax.crypto.Mac
+           javax.crypto.spec.SecretKeySpec))
 
 (defmacro defn-wrap
   "Like defn, but applies wrap-fn."
@@ -127,7 +129,7 @@
     arr))
 
 (defn secret-key [& [num-bytes]]
-  (-> (or num-bytes 16) rand-bytes codec/base64-encode))
+  (-> (or num-bytes 16) rand-bytes ruc/base64-encode))
 
 (defn base64url-encode
   "Return a base64url encoded string as defined by RFC 4648 §5 at
@@ -256,3 +258,16 @@
 (defn format-date 
   ([] (format-date (tm/now)))
   ([dt] (tf/unparse date-format dt)))
+
+(defn hmac-fn [algorithm]
+  (fn [key data]
+    (let [key (.getBytes key "UTF-8")
+          data (.getBytes data "UTF-8")
+          mac (Mac/getInstance algorithm)]
+      (.init mac (SecretKeySpec. key algorithm))
+      (.doFinal mac data))))
+
+(def hmac-sha1 (hmac-fn "HmacSHA1"))
+(def hmac-sha256 (hmac-fn "HmacSHA256"))
+(def base64-hmac-sha1 (comp ruc/base64-encode hmac-sha1))
+(def base64-hmac-sha256 (comp ruc/base64-encode hmac-sha256))
