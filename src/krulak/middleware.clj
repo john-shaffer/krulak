@@ -55,7 +55,7 @@
   (-> f
       wrap-form-in-body-params
       (rmf/wrap-restful-format
-       :formats [:json-kw :edn :yaml-kw :yaml-in-html])))
+       :formats [:json-kw :transit-json :edn :yaml-kw :yaml-in-html])))
 
 (defmacro defrestful [sym & body]
   `(kr/defn-wrap ~sym wrap-restful-format
