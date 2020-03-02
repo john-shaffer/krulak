@@ -68,7 +68,7 @@
         [base64-policy signature]
 		  (policy secret-key (:bucket conditions)
                           (:key conditions) expires conditions)]
-  [(str "http://" bucket ".s3.amazonaws.com")
+  [(str "https://" bucket ".s3.amazonaws.com")
    (merge {:AWSAccessKeyId access-key
            :key key
            :Policy base64-policy
