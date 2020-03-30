@@ -2,8 +2,6 @@
   "Utility functions and macros."
   (:require [cheshire.core :as json]
             [clj-http.client :as client]
-            [clj-time.core :as tm]
-            [clj-time.format :as tf]
             [clojure.core.cache :as cache]
             [clojure.core.memoize :as memo]
             [clojure.string :as str]
@@ -11,6 +9,9 @@
             [ring.util.codec :as ruc])
   (:import clojure.core.memoize.PluggableMemoization
            java.net.URLEncoder
+           [java.time LocalDate ZoneId]
+           java.time.format.DateTimeFormatter
+           java.util.Locale
            javax.crypto.Mac
            javax.crypto.spec.SecretKeySpec))
 
@@ -240,24 +241,27 @@
     (let [[f & more] (query-param-pairs m)]
       (str/join "&" (cons (str "?" f) more)))))
 
+#?(:clj
+   (def date-formatter
+     (DateTimeFormatter/ofPattern "MMMM d, yyyy" Locale/ENGLISH)))
+
+#?(:clj
+   (def utc-zone
+     (ZoneId/of "UTC")))
+
 (def month-names
   ["January" "February" "March" "April" "May" "June"
    "July" "August" "September" "October" "November" "December"])
 
 (defn pretty-date
   "Return date formatted like \"February 2, 2014\"."
-  ([] (pretty-date (tm/now)))
-  ([dt]
-     (let [month-name (-> dt tm/month dec month-names)]
-       (str month-name " " (tm/day dt) ", " (tm/year dt)))))
-
-(def date-format (tf/formatter "yyyy/MM/dd HH:mm:ss"))
-
-(def parse-date (partial tf/parse date-format))
-
-(defn format-date 
-  ([] (format-date (tm/now)))
-  ([dt] (tf/unparse date-format dt)))
+  [dt]
+  #?(:clj (-> dt .toInstant (LocalDate/ofInstant utc-zone)
+            (.format date-formatter))
+     :cljs
+     (str
+       (nth month-names (.getUTCMonth dt)) " "
+       (.getUTCDate dt) ", " (.getUTCFullYear dt))))
 
 (defn hmac-fn [algorithm]
   (fn [key data]
