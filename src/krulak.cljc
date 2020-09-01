@@ -266,7 +266,7 @@
        (.getUTCDate dt) ", " (.getUTCFullYear dt))))
 
 (defn hmac-fn [algorithm]
-  (fn [key data]
+  (fn ^bytes [key data]
     (let [key (.getBytes key "UTF-8")
           data (.getBytes data "UTF-8")
           mac (Mac/getInstance algorithm)]
