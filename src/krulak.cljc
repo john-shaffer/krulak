@@ -15,6 +15,8 @@
            javax.crypto.Mac
            javax.crypto.spec.SecretKeySpec))
 
+(set! *warn-on-reflection* true)
+
 (defmacro defn-wrap
   "Like defn, but applies wrap-fn."
   [name-sym wrap-fn & body]
