@@ -123,7 +123,7 @@
 
 (defn uuid [] (str (java.util.UUID/randomUUID)))
 
-(defn rand-bytes [n]
+(defn rand-bytes ^bytes [n]
   {:pre [(number? n)]}
   (let [arr (byte-array n)]
     (.nextBytes
