@@ -111,7 +111,7 @@
 
 (defmacro defalias [new-name old-name]
   `(alter-meta!
-    (def ~new-name)
+    (def ~new-name ~old-name)
       (update-alias-meta '~old-name (meta (var ~old-name)))))
 
 (defmacro defaliases [& syms]
