@@ -21,7 +21,7 @@
     (f/when-let-ok? [resp (get url req)]
       (if (empty? (:body resp))
         (assoc resp :body nil)
-        (f/try-all [json-resp (json/parse-string (:body resp))]
+        (f/try-all [json-resp (json/parse-string (:body resp) true)]
           (assoc resp :body json-resp))))))
 
 (defn json-request [http-method-f url req body]
@@ -30,7 +30,7 @@
       (f/when-let-ok? [resp (http-method-f url (assoc req :body json))]
         (if (empty? (:body resp))
           (assoc resp :body nil)
-          (f/try-all [json-resp (json/parse-string (:body resp))]
+          (f/try-all [json-resp (json/parse-string (:body resp) true)]
             (assoc resp :body json-resp)))))))
 
 (defn json-post [url req body]
