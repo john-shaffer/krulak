@@ -3,6 +3,10 @@
         org.clojure/core.memoize {:mvn/version "1.0.236"}
         cheshire/cheshire {:mvn/version "5.10.0"}
         clj-http/clj-http {:mvn/version "3.11.0"}
+        failjure/failjure {:mvn/version "2.0.0"}
+        io.staticweb/clj-http-failjure
+        {:git/url "https://github.com/staticweb-io/clj-http-failjure.git"
+         :sha "5d07819900b3857b5436b77b4978eadebf4edcdc"}
         medley/medley {:mvn/version "1.3.0"}
         ring/ring-anti-forgery {:mvn/version "1.3.0"}
         ring/ring-codec {:mvn/version "1.1.2"}
