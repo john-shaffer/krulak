@@ -265,13 +265,14 @@
        (nth month-names (.getUTCMonth dt)) " "
        (.getUTCDate dt) ", " (.getUTCFullYear dt))))
 
+(defn ^bytes hmac-bytes [algorithm ^bytes key ^bytes data]
+  (let [mac (Mac/getInstance algorithm)]
+    (.init mac (SecretKeySpec. key algorithm))
+    (.doFinal mac data)))
+
 (defn hmac-fn [algorithm]
-  (fn ^bytes [^String key ^String data]
-    (let [key (.getBytes key "UTF-8")
-          data (.getBytes data "UTF-8")
-          mac (Mac/getInstance algorithm)]
-      (.init mac (SecretKeySpec. key algorithm))
-      (.doFinal mac data))))
+  (fn [^String key ^String data]
+    (hmac-bytes algorithm key data)))
 
 (def hmac-sha1 (hmac-fn "HmacSHA1"))
 (def hmac-sha256 (hmac-fn "HmacSHA256"))
