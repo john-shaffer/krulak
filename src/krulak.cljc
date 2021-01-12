@@ -255,10 +255,13 @@
   ["January" "February" "March" "April" "May" "June"
    "July" "August" "September" "October" "November" "December"])
 
+(defn ^java.time.LocalDate instant->local-date [^java.time.Instant i]
+  (.toLocalDate (.atZone i utc-zone)))
+
 (defn pretty-date
   "Return date formatted like \"February 2, 2014\"."
-  [dt]
-  #?(:clj (-> dt .toInstant (LocalDate/ofInstant utc-zone)
+  [^java.util.Date dt]
+  #?(:clj (-> dt .toInstant instant->local-date
             (.format date-formatter))
      :cljs
      (str
