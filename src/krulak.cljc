@@ -275,7 +275,9 @@
 
 (defn hmac-fn [algorithm]
   (fn [^String key ^String data]
-    (hmac-bytes algorithm key data)))
+    (hmac-bytes algorithm
+      (.getBytes key "UTF-8")
+      (.getBytes data "UTF-8"))))
 
 (def hmac-sha1 (hmac-fn "HmacSHA1"))
 (def hmac-sha256 (hmac-fn "HmacSHA256"))
